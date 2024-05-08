@@ -30,7 +30,7 @@ Test a personal implementation of the Dijkstra's path finding algorithm
     - [ ] Avoid multiple links between 2 servers
   - [x] Server drag
     - [x] Drag mode
-  - [ ] Disable server
+  - [x] Disable server
 - [ ] DNS
   - [ ] DNS implementation
   - [ ] DNS update on server creation, server suppression and website list modification

@@ -5,6 +5,7 @@ class Server {
     websites;
     radius = 25;
     selected = false;
+    disabled = false;
 
     constructor(pos_x, pos_y, ip_address, websites) {
         this.pos_x = pos_x;
@@ -17,7 +18,11 @@ class Server {
         let circle = new Path2D();
         circle.arc(this.pos_x, this.pos_y, this.radius, 0, 2 * Math.PI, false);
 
-        context.fillStyle = 'blue'; // Fill color
+        if(this.disabled) {
+            context.fillStyle = 'red'; // Fill color
+        } else {
+            context.fillStyle = 'blue'; // Fill color
+        }
         context.fill(circle); // Fill the circle
 
         if(this.selected) {

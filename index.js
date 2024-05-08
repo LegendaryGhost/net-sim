@@ -27,6 +27,7 @@ const selectServer = server => {
     network.selectedServer = server;
     selectedServerForm.querySelector('#selected-ip').textContent = server.ip_address.join('.');
     selectedServerForm.querySelector('#selected-websites').value = server.websites.join(';');
+    selectedServerForm.querySelector('#selected-disable').textContent = server.disabled ? 'Rallumer' : 'Eteindre';
     network.draw(canvas, context);
 };
 
@@ -73,11 +74,20 @@ selectedServerForm.addEventListener('submit', event => {
     event.preventDefault();
     if (network.selectedServer) {
         const formData = new FormData(event.target);
-        network.selectedServer.websites = [...new Set(formData.get('selected-websites').split(';'))];
-        alert('Les données du serveur ont été sauvegardées');
+        const submitter = event.submitter;
+
+        if (submitter.id === 'selected-disable') {
+            network.selectedServer.disabled = !network.selectedServer.disabled;
+            selectServer(network.selectedServer);
+            alert('Le serveur a été éteint');
+        } else {
+            network.selectedServer.websites = [...new Set(formData.get('selected-websites').split(';'))];
+            alert('Les données du serveur ont été sauvegardées');
+        }
     } else {
         alert("Aucun serveur n'a été sélectionné !");
     }
+    network.draw(canvas, context);
 });
 
 selectedServerForm.addEventListener('reset', () => {
