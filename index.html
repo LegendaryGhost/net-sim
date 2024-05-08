@@ -19,8 +19,17 @@
         <button type="submit">Créer</button>
         <button type="reset">Annuler</button>
     </form>
+    <form action="#" method="get" id="linking-form">
+        <label for="latency">Latence :</label><br>
+        <input type="number" name="latency" id="latency" value="1" min="1"><br>
+        <button type="submit">Lier</button>
+        <button type="reset">Annuler</button>
+    </form>
     <menu id="add-server-context">
         <button type="button">Créer un serveur</button>
+    </menu>
+    <menu id="server-context">
+        <button type="button" id="link-server">Etablir une liaison</button>
     </menu>
     <form action="#" method="get" id="selected-server-form">
         <h1>Serveur sélectionné</h1>
@@ -31,7 +40,8 @@
         <button type="reset">Supprimer</button>
     </form>
     <canvas id="network" width="800" height="600"></canvas>
-    <script src="server.js"></script>
-    <script src="index.js"></script>
+    <script src="network.js" defer></script>
+    <script src="server.js" defer></script>
+    <script src="index.js" defer></script>
 </body>
 </html>

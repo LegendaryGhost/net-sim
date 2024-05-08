@@ -15,7 +15,7 @@ form label, form input, form textarea {
     margin-bottom: .5rem;
 }
 
-#pop-up-background, #add-server-form, #add-server-context {
+#pop-up-background, #add-server-form, #add-server-context, #server-context, #linking-form {
     position: absolute;
     display: none;
 }
@@ -30,14 +30,14 @@ form label, form input, form textarea {
     z-index: 100;
 }
 
-#add-server-form {
+#add-server-form, #linking-form {
     background-color: white;
     padding: 10px;
     border-radius: 10px;
     z-index: 101;
 }
 
-#add-server-context {
+#add-server-context, #server-context {
     margin: 0;
     padding: 0;
     top: 0;

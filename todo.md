@@ -20,9 +20,15 @@ Test a personal implementation of the Dijkstra's path finding algorithm
     - [x] Server menu
     - [x] Select server
     - [x] Save changes made on a server
-  - [ ] Server suppression
-  - [ ] Link creation between servers (Latency duration)
-  - [ ] Server drag n drop
+  - [x] Server suppression
+  - [x] Link creation between servers with latency duration
+    - [x] Server context menu
+    - [x] Linking mode
+    - [x] Linking form
+    - [x] Save the new link
+    - [x] Draw links
+  - [ ] Server drag
+    - [ ] Drag mode
   - [ ] Disable server
 - [ ] DNS
   - [ ] DNS implementation
