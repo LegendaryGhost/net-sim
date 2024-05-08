@@ -27,8 +27,9 @@ Test a personal implementation of the Dijkstra's path finding algorithm
     - [x] Linking form
     - [x] Save the new link
     - [x] Draw links
-  - [ ] Server drag
-    - [ ] Drag mode
+    - [ ] Avoid multiple links between 2 servers
+  - [x] Server drag
+    - [x] Drag mode
   - [ ] Disable server
 - [ ] DNS
   - [ ] DNS implementation

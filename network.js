@@ -31,7 +31,7 @@ class Network {
 
             // Set the font properties
             context.font = '15px Arial';
-            context.fillStyle = 'back';
+            context.fillStyle = 'black';
 
             // Draw the text
             context.fillText(

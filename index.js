@@ -7,7 +7,10 @@ const selectedServerForm = document.getElementById("selected-server-form");
 const canvas = document.getElementById('network');
 const context = canvas.getContext('2d');
 const network = new Network();
-let toLinkServer = null;
+let toLinkServer = null,
+    diffX = 0,
+    diffY = 0,
+    dragging = false;
 
 const getCanvasRelativeCoordinate = (absolute_x, absolute_y) => {
     const canvasRect = canvas.getBoundingClientRect();
@@ -150,8 +153,33 @@ canvas.addEventListener('click', event => {
     }
 });
 
+canvas.addEventListener('mousedown', event => {
+    const {x, y} = getCanvasRelativeCoordinate(event.x, event.y);
+
+    if (!network.selectedServer) {
+        return;
+    }
+    if(!network.selectedServer.contains(x, y)) {
+        return;
+    }
+    diffX = network.selectedServer.pos_x - x;
+    diffY = network.selectedServer.pos_y - y;
+    dragging = true;
+});
+
+canvas.addEventListener('mouseup', () => {
+    diffX = 0;
+    diffY = 0;
+    dragging = false;
+});
+
+
 canvas.addEventListener('mousemove', event => {
     const {x, y} = getCanvasRelativeCoordinate(event.x, event.y);
+    if (dragging) {
+        network.selectedServer.pos_x = x + diffX;
+        network.selectedServer.pos_y = y + diffY;
+    }
     network.draw(canvas, context, x, y);
 });
 
