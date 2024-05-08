@@ -7,6 +7,7 @@ const selectedServerForm = document.getElementById("selected-server-form");
 const canvas = document.getElementById('network');
 const context = canvas.getContext('2d');
 const network = new Network();
+const dns = new DNS(network);
 let toLinkServer = null,
     diffX = 0,
     diffY = 0,
@@ -25,7 +26,7 @@ const selectServer = server => {
     }
     server.selected = true;
     network.selectedServer = server;
-    selectedServerForm.querySelector('#selected-ip').textContent = server.ip_address.join('.');
+    selectedServerForm.querySelector('#selected-ip').textContent = server.ipAddress.join('.');
     selectedServerForm.querySelector('#selected-websites').value = server.websites.join(';');
     selectedServerForm.querySelector('#selected-disable').textContent = server.disabled ? 'Rallumer' : 'Eteindre';
     network.draw(canvas, context);
@@ -41,22 +42,28 @@ addServerForm.addEventListener('submit', event => {
     event.preventDefault();
     const {x, y} = getCanvasRelativeCoordinate(parseInt(addServerMenu.style.left), parseInt(addServerMenu.style.top));
     const formData = new FormData(event.target);
-    const ip_address = [
+    const ipAddress = [
         formData.get('ip-1'),
         formData.get('ip-2'),
         formData.get('ip-3'),
         formData.get('ip-4')
     ];
-    const same_ip_server = network.servers.find(server => JSON.stringify(server.ip_address) === JSON.stringify(ip_address));
-    const websites = [...new Set(formData.get('websites').split(';'))];
+    const sameIpServer = network.servers.find(server => JSON.stringify(server.ipAddress) === JSON.stringify(ipAddress));
+    let websitesArray = [...new Set(formData.get('websites').split(';'))];
+    // Check if the resulting array contains only an empty string
+    if (websitesArray.length === 1 && websitesArray[0] === '') {
+        // If so, set websitesArray to an empty array
+        websitesArray = [];
+    }
 
-    if (same_ip_server) {
-        alert(`L'adresse IP ${ip_address[0]}.${ip_address[1]}.${ip_address[2]}.${ip_address[3]} est déjà utilisée`);
+    if (sameIpServer) {
+        alert(`L'adresse IP ${ipAddress.join('.')} est déjà utilisée`);
         return;
     }
 
-    network.addServer(new Server(x, y, ip_address, websites));
+    network.addServer(new Server(x, y, ipAddress, websitesArray));
     network.draw(canvas, context);
+    dns.updateRecords();
     addServerForm.reset();
 });
 
@@ -81,7 +88,14 @@ selectedServerForm.addEventListener('submit', event => {
             selectServer(network.selectedServer);
             alert('Le serveur a été éteint');
         } else {
-            network.selectedServer.websites = [...new Set(formData.get('selected-websites').split(';'))];
+            let websitesArray = [...new Set(formData.get('selected-websites').split(';'))];
+            // Check if the resulting array contains only an empty string
+            if (websitesArray.length === 1 && websitesArray[0] === '') {
+                // If so, set websitesArray to an empty array
+                websitesArray = [];
+            }
+            network.selectedServer.websites = websitesArray;
+            dns.updateRecords();
             alert('Les données du serveur ont été sauvegardées');
         }
     } else {
@@ -91,9 +105,10 @@ selectedServerForm.addEventListener('submit', event => {
 });
 
 selectedServerForm.addEventListener('reset', () => {
-    network.servers = network.servers.filter(server => JSON.stringify(server.ip_address) !== JSON.stringify(network.selectedServer.ip_address));
+    network.servers = network.servers.filter(server => JSON.stringify(server.ipAddress) !== JSON.stringify(network.selectedServer.ipAddress));
     network.selectedServer = null;
     selectedServerForm.querySelector('#selected-ip').textContent = '0.0.0.0';
+    dns.updateRecords();
     network.draw(canvas, context);
 });
 
@@ -172,8 +187,8 @@ canvas.addEventListener('mousedown', event => {
     if(!network.selectedServer.contains(x, y)) {
         return;
     }
-    diffX = network.selectedServer.pos_x - x;
-    diffY = network.selectedServer.pos_y - y;
+    diffX = network.selectedServer.posX - x;
+    diffY = network.selectedServer.posY - y;
     dragging = true;
 });
 
@@ -183,12 +198,11 @@ canvas.addEventListener('mouseup', () => {
     dragging = false;
 });
 
-
 canvas.addEventListener('mousemove', event => {
     const {x, y} = getCanvasRelativeCoordinate(event.x, event.y);
     if (dragging) {
-        network.selectedServer.pos_x = x + diffX;
-        network.selectedServer.pos_y = y + diffY;
+        network.selectedServer.posX = x + diffX;
+        network.selectedServer.posY = y + diffY;
     }
     network.draw(canvas, context, x, y);
 });

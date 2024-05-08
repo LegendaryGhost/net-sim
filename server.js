@@ -1,22 +1,22 @@
 class Server {
-    pos_x;
-    pos_y;
-    ip_address;
+    posX;
+    posY;
+    ipAddress;
     websites;
     radius = 25;
     selected = false;
     disabled = false;
 
-    constructor(pos_x, pos_y, ip_address, websites) {
-        this.pos_x = pos_x;
-        this.pos_y = pos_y;
-        this.ip_address = ip_address;
+    constructor(posX, posY, ipAddress, websites) {
+        this.posX = posX;
+        this.posY = posY;
+        this.ipAddress = ipAddress;
         this.websites = websites;
     }
 
     draw(context) {
         let circle = new Path2D();
-        circle.arc(this.pos_x, this.pos_y, this.radius, 0, 2 * Math.PI, false);
+        circle.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI, false);
 
         if(this.disabled) {
             context.fillStyle = 'red'; // Fill color
@@ -39,15 +39,15 @@ class Server {
 
         // Draw the text
         context.fillText(
-            this.ip_address[0] + '.' + this.ip_address[1] + '.' + this.ip_address[2] + '.' + this.ip_address[3],
-            this.pos_x - this.radius,
-            this.pos_y + 2 * this.radius
+            this.ipAddress[0] + '.' + this.ipAddress[1] + '.' + this.ipAddress[2] + '.' + this.ipAddress[3],
+            this.posX - this.radius,
+            this.posY + 2 * this.radius
         );
     }
 
     contains(x, y) {
         // Calculate the distance between the point (x, y) and the center of the circle
-        let distance = Math.sqrt(Math.pow(x - this.pos_x, 2) + Math.pow(y - this.pos_y, 2));
+        let distance = Math.sqrt(Math.pow(x - this.posX, 2) + Math.pow(y - this.posY, 2));
 
         // Check if the distance is less than or equal to the radius
         return distance <= this.radius;

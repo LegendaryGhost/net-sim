@@ -31,9 +31,10 @@ Test a personal implementation of the Dijkstra's path finding algorithm
   - [x] Server drag
     - [x] Drag mode
   - [x] Disable server
-- [ ] DNS
-  - [ ] DNS implementation
-  - [ ] DNS update on server creation, server suppression and website list modification
+- [x] DNS
+  - [x] DNS implementation
+  - [x] DNS update on server creation, server suppression and website list modification
+  - [x] Url to IP addresses
 - [ ] Dijkstra's algorithm
   - [ ] Url search on server
     - [ ] Find the closest path to the server which contains the requested url
