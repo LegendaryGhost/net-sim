@@ -134,7 +134,8 @@ urlSearchForm.addEventListener('submit', event => {
                 currentPath = path;
             }
         }
-        console.log(currentPath);
+        network.highlightPath(currentPath);
+        network.draw(canvas, context);
     } catch (e) {
         alert(e.message);
     }

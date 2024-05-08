@@ -32,9 +32,9 @@ class Network {
             context.stroke(); // Draw the line
         }
 
-        context.strokeStyle = '#000066';
         context.lineWidth = 5; // Stroke width
         for (const connection of this.connections) {
+            context.strokeStyle = connection.server1.highlighted && connection.server2.highlighted ? '#00FF00' : '#000066';
             const x1 = connection.server1.posX;
             const y1 = connection.server1.posY;
             const x2 = connection.server2.posX;
@@ -118,5 +118,10 @@ class Network {
         }
 
         return {path: shortestPath, distance: receiverServer.distance};
+    }
+
+    highlightPath(path) {
+        this.servers.forEach(server => server.highlighted = false);
+        path.forEach(server => server.highlighted = true);
     }
 }

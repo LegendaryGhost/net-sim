@@ -10,6 +10,7 @@ class Server {
     colored = false;
     neighbours = [];
     previous;
+    highlighted = false;
 
     constructor(posX, posY, ipAddress, websites) {
         this.posX = posX;
@@ -31,6 +32,8 @@ class Server {
 
         if(this.selected) {
             context.strokeStyle = '#FFFFFF'; // Stroke color
+        } else if(this.highlighted) {
+            context.strokeStyle = '#00FF00'; // Stroke color
         } else {
             context.strokeStyle = '#000066'; // Stroke color
         }
