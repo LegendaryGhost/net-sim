@@ -1,11 +1,15 @@
 class Server {
     posX;
     posY;
+    distance;
     ipAddress;
     websites;
     radius = 25;
     selected = false;
     disabled = false;
+    colored = false;
+    neighbours = [];
+    previous;
 
     constructor(posX, posY, ipAddress, websites) {
         this.posX = posX;

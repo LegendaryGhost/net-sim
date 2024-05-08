@@ -4,6 +4,7 @@ const addServerMenu = document.getElementById("add-server-context");
 const serverMenu = document.getElementById("server-context");
 const linkingForm = document.getElementById('linking-form');
 const selectedServerForm = document.getElementById("selected-server-form");
+const urlSearchForm = document.getElementById('url-search-form');
 const canvas = document.getElementById('network');
 const context = canvas.getContext('2d');
 const network = new Network();
@@ -48,7 +49,7 @@ addServerForm.addEventListener('submit', event => {
         formData.get('ip-3'),
         formData.get('ip-4')
     ];
-    const sameIpServer = network.servers.find(server => JSON.stringify(server.ipAddress) === JSON.stringify(ipAddress));
+    const sameIpServer = network.servers.find(server => server.ipAddress.join('.') === ipAddress.join('.'));
     let websitesArray = [...new Set(formData.get('websites').split(';'))];
     // Check if the resulting array contains only an empty string
     if (websitesArray.length === 1 && websitesArray[0] === '') {
@@ -79,37 +80,64 @@ serverMenu.querySelector("button#link-server").addEventListener('click', () => {
 
 selectedServerForm.addEventListener('submit', event => {
     event.preventDefault();
-    if (network.selectedServer) {
-        const formData = new FormData(event.target);
-        const submitter = event.submitter;
-
-        if (submitter.id === 'selected-disable') {
-            network.selectedServer.disabled = !network.selectedServer.disabled;
-            selectServer(network.selectedServer);
-            alert('Le serveur a été éteint');
-        } else {
-            let websitesArray = [...new Set(formData.get('selected-websites').split(';'))];
-            // Check if the resulting array contains only an empty string
-            if (websitesArray.length === 1 && websitesArray[0] === '') {
-                // If so, set websitesArray to an empty array
-                websitesArray = [];
-            }
-            network.selectedServer.websites = websitesArray;
-            dns.updateRecords();
-            alert('Les données du serveur ont été sauvegardées');
-        }
-    } else {
+    if (!network.selectedServer) {
         alert("Aucun serveur n'a été sélectionné !");
+        return;
+    }
+
+    const formData = new FormData(event.target);
+    const submitter = event.submitter;
+
+    if (submitter.id === 'selected-disable') {
+        network.selectedServer.disabled = !network.selectedServer.disabled;
+        selectServer(network.selectedServer);
+    } else {
+        let websitesArray = [...new Set(formData.get('selected-websites').split(';'))];
+        // Check if the resulting array contains only an empty string
+        if (websitesArray.length === 1 && websitesArray[0] === '') {
+            // If so, set websitesArray to an empty array
+            websitesArray = [];
+        }
+        network.selectedServer.websites = websitesArray;
+        dns.updateRecords();
+        alert('Les données du serveur ont été sauvegardées');
     }
     network.draw(canvas, context);
 });
 
 selectedServerForm.addEventListener('reset', () => {
-    network.servers = network.servers.filter(server => JSON.stringify(server.ipAddress) !== JSON.stringify(network.selectedServer.ipAddress));
+    network.servers = network.servers.filter(server => server.ipAddress.join('.') !== network.selectedServer.ipAddress.join('.'));
     network.selectedServer = null;
     selectedServerForm.querySelector('#selected-ip').textContent = '0.0.0.0';
     dns.updateRecords();
     network.draw(canvas, context);
+});
+
+urlSearchForm.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!network.selectedServer) {
+        alert("Aucun serveur n'a été sélectionné !");
+        return;
+    }
+
+    const url = (new FormData(event.target)).get('url').toString();
+    const senderIp = network.selectedServer.ipAddress.join('.');
+    let receiverIps;
+
+    try {
+        receiverIps = dns.resolve(url);
+        let currentPath = [], currentDistance = Infinity;
+        for (const receiverIp of receiverIps) {
+            const {path, distance} = network.dijkstra(senderIp, receiverIp);
+            if (distance < currentDistance) {
+                currentDistance = distance;
+                currentPath = path;
+            }
+        }
+        console.log(currentPath);
+    } catch (e) {
+        alert(e.message);
+    }
 });
 
 linkingForm.addEventListener('submit', event => {
@@ -165,7 +193,7 @@ canvas.addEventListener('click', event => {
     }
 
     if(network.linkingMode) {
-        if (clickedServer && JSON.stringify(clickedServer) !== JSON.stringify(network.selectedServer)) {
+        if (clickedServer && clickedServer.ipAddress.join('.') !== network.selectedServer.ipAddress.join('.')) {
             toLinkServer = clickedServer;
             popUpBackground.style.display = 'block';
             linkingForm.style.display = 'block';
@@ -212,4 +240,5 @@ document.addEventListener('click', () => {
     serverMenu.style.display = 'none';
 });
 
+dns.updateRecords();
 network.draw(canvas, context);

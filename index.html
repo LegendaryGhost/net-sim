@@ -31,15 +31,23 @@
     <menu id="server-context">
         <button type="button" id="link-server">Etablir une liaison</button>
     </menu>
-    <form action="#" method="get" id="selected-server-form">
-        <h1>Serveur sélectionné</h1>
-        <p>Adresse IP : <span id="selected-ip">0.0.0.0</span></p>
-        <label for="selected-websites">Sites web :</label><br>
-        <textarea name="selected-websites" id="selected-websites" cols="40" rows="10"></textarea><br>
-        <button type="submit">Sauvegarder</button>
-        <button type="submit" id="selected-disable">Eteindre</button>
-        <button type="reset">Supprimer</button>
-    </form>
+    <aside>
+        <form action="#" method="get" id="selected-server-form">
+            <h1>Serveur sélectionné</h1>
+            <p>Adresse IP : <span id="selected-ip">0.0.0.0</span></p>
+            <label for="selected-websites">Sites web :</label><br>
+            <textarea name="selected-websites" id="selected-websites" cols="40" rows="10"></textarea><br>
+            <button type="submit">Sauvegarder</button>
+            <button type="submit" id="selected-disable">Eteindre</button>
+            <button type="reset">Supprimer</button>
+        </form>
+        <hr>
+        <form id="url-search-form">
+            <label for="url">URL :</label><br>
+            <input type="text" name="url" id="url"><br>
+            <button type="submit">Rechercher</button>
+        </form>
+    </aside>
     <canvas id="network" width="800" height="600"></canvas>
     <script src="network.js" defer></script>
     <script src="server.js" defer></script>

@@ -30,8 +30,7 @@ class DNS {
         if (record) {
             return record.ipAddresses;
         } else {
-            throw new Error(`Url not found in the network: ${domain}`);
-
+            throw new Error(`Url not found in the network: '${domain}'`);
         }
     }
 }

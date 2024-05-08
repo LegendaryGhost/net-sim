@@ -37,5 +37,6 @@ Test a personal implementation of the Dijkstra's path finding algorithm
   - [x] Url to IP addresses
 - [ ] Dijkstra's algorithm
   - [ ] Url search on server
-    - [ ] Find the closest path to the server which contains the requested url
+    - [x] Search form
+    - [x] Find the closest path to the server which contains the requested url
     - [ ] Highlight the closest path
