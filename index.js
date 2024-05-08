@@ -106,8 +106,7 @@ selectedServerForm.addEventListener('submit', event => {
 });
 
 selectedServerForm.addEventListener('reset', () => {
-    network.servers = network.servers.filter(server => server.ipAddress.join('.') !== network.selectedServer.ipAddress.join('.'));
-    network.selectedServer = null;
+    network.deleteServer(network.selectedServer);
     selectedServerForm.querySelector('#selected-ip').textContent = '0.0.0.0';
     dns.updateRecords();
     network.draw(canvas, context);

@@ -63,6 +63,13 @@ class Network {
         this.servers.push(server);
     }
 
+    deleteServer(deletedServer) {
+        const deletedIp = deletedServer.ipAddress.join('.');
+        this.servers = this.servers.filter(server => server.ipAddress.join('.') !== deletedIp);
+        this.connections = this.connections.filter(connection => connection.server1.ipAddress.join('.') !== deletedIp && connection.server2.ipAddress.join('.') !== deletedIp)
+        this.selectedServer = null;
+    }
+
     addConnection(server1, server2, latency) {
         this.connections.push({ server1, server2, latency });
         server1.neighbours.push(server2);

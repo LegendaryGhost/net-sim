@@ -30,7 +30,7 @@ class DNS {
         if (record) {
             return record.ipAddresses;
         } else {
-            throw new Error(`Url not found in the network: '${domain}'`);
+            throw new Error(`Erreur 404, url introuvable : '${domain}'`);
         }
     }
 }
