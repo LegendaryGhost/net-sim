@@ -64,10 +64,15 @@ class Network {
     }
 
     deleteServer(deletedServer) {
-        const deletedIp = deletedServer.ipAddress.join('.');
+        const deletedIp = deletedServer.getIpString();
         this.servers = this.servers.filter(server => server.ipAddress.join('.') !== deletedIp);
-        this.connections = this.connections.filter(connection => connection.server1.ipAddress.join('.') !== deletedIp && connection.server2.ipAddress.join('.') !== deletedIp)
-        this.selectedServer = null;
+        this.servers.forEach(
+            server => server.neighbours = server.neighbours.filter(
+                neighbour => neighbour.getIpString() !== deletedIp
+            )
+        );
+        this.connections = this.connections.filter(connection => connection.server1.getIpString() !== deletedIp && connection.server2.getIpString() !== deletedIp)
+        this.selectedServer = this.selectedServer.getIpString() === deletedIp ? null : this.selectedServer;
     }
 
     addConnection(server1, server2, latency) {
