@@ -71,6 +71,11 @@ class Network {
     }
 
     addConnection(server1, server2, latency) {
+        this.connections = this.connections.filter(
+            connection =>
+                !(connection.server1.getIpString() === server1.getIpString() && connection.server2.getIpString() === server2.getIpString()) &&
+                !(connection.server1.getIpString() === server2.getIpString() && connection.server2.getIpString() === server1.getIpString())
+        );
         this.connections.push({ server1, server2, latency });
         server1.neighbours.push(server2);
         server2.neighbours.push(server1);

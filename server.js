@@ -19,6 +19,10 @@ class Server {
         this.websites = websites;
     }
 
+    getIpString() {
+        return this.ipAddress.join('.');
+    }
+
     draw(context) {
         let circle = new Path2D();
         circle.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI, false);
