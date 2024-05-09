@@ -118,6 +118,10 @@ urlSearchForm.addEventListener('submit', event => {
         alert("Aucun serveur n'a été sélectionné !");
         return;
     }
+    if(network.selectedServer.disabled) {
+        alert("Le serveur sélectionné est éteint !");
+        return;
+    }
 
     const url = (new FormData(event.target)).get('url').toString();
     const senderIp = network.selectedServer.ipAddress.join('.');
