@@ -56,6 +56,7 @@ addServerForm.addEventListener('submit', event => {
         // If so, set websitesArray to an empty array
         websitesArray = [];
     }
+    websitesArray = websitesArray.map(website => website.trim());
 
     if (sameIpServer) {
         alert(`L'adresse IP ${ipAddress.join('.')} est déjà utilisée`);
@@ -98,6 +99,7 @@ selectedServerForm.addEventListener('submit', event => {
             // If so, set websitesArray to an empty array
             websitesArray = [];
         }
+        websitesArray = websitesArray.map(website => website.trim());
         network.selectedServer.websites = websitesArray;
         dns.updateRecords();
         alert('Les données du serveur ont été sauvegardées');
