@@ -106,6 +106,11 @@ selectedServerForm.addEventListener('submit', event => {
 });
 
 selectedServerForm.addEventListener('reset', () => {
+    if (!network.selectedServer) {
+        alert("Aucun serveur n'a été sélectionné !");
+        return;
+    }
+
     network.deleteServer(network.selectedServer);
     selectedServerForm.querySelector('#selected-ip').textContent = '0.0.0.0';
     dns.updateRecords();
