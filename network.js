@@ -10,10 +10,11 @@ class Network {
             new Server(30, 500, [127, 0, 0, 2], ['facebook.com']),
             new Server(400, 30, [127, 0, 0, 3], []),
             new Server(200, 300, [127, 0, 0, 4], []),
-            new Server(300, 400, [127, 0, 0, 5], ['facebook.com'])
+            new Server(400, 300, [127, 0, 0, 5], ['facebook.com'])
         ]
         this.addConnection(this.servers[0], this.servers[3], 10);
         this.addConnection(this.servers[0], this.servers[2], 7);
+        this.addConnection(this.servers[0], this.servers[4], 69);
         this.addConnection(this.servers[1], this.servers[3], 11);
         this.addConnection(this.servers[3], this.servers[4], 6);
         this.addConnection(this.servers[2], this.servers[4], 4);
@@ -34,7 +35,7 @@ class Network {
 
         context.lineWidth = 5; // Stroke width
         for (const connection of this.connections) {
-            context.strokeStyle = connection.server1.highlighted && connection.server2.highlighted ? '#00FF00' : '#000066';
+            context.strokeStyle = connection.highlighted ? '#00FF00' : '#000066';
             const x1 = connection.server1.posX;
             const y1 = connection.server1.posY;
             const x2 = connection.server2.posX;
@@ -81,7 +82,7 @@ class Network {
                 !(connection.server1.getIpString() === server1.getIpString() && connection.server2.getIpString() === server2.getIpString()) &&
                 !(connection.server1.getIpString() === server2.getIpString() && connection.server2.getIpString() === server1.getIpString())
         );
-        this.connections.push({ server1, server2, latency });
+        this.connections.push({ server1, server2, latency, highlighted: false });
         server1.neighbours.push(server2);
         server2.neighbours.push(server1);
     }
@@ -139,6 +140,17 @@ class Network {
 
     highlightPath(path) {
         this.servers.forEach(server => server.highlighted = false);
+        this.connections.forEach(connection => connection.highlighted = false)
         path.forEach(server => server.highlighted = true);
+        for (let i = 0; i <= path.length - 2; i++) {
+            const server1 = path[i];
+            const server2 = path[i + 1];
+            const connection = this.connections.find(
+                connection =>
+                    connection.server1.getIpString() === server1.getIpString() && connection.server2.getIpString() === server2.getIpString() ||
+                    connection.server1.getIpString() === server2.getIpString() && connection.server2.getIpString() === server1.getIpString()
+            );
+            if (connection) connection.highlighted = true;
+        }
     }
 }
