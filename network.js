@@ -35,7 +35,7 @@ class Network {
 
         context.lineWidth = 5; // Stroke width
         for (const connection of this.connections) {
-            context.strokeStyle = connection.highlighted ? '#00FF00' : '#000066';
+            context.strokeStyle = connection.highlighted ? '#00FF00' : (connection.bfsHighlighted ? '#FF0000' : '#000066');
             const x1 = connection.server1.posX;
             const y1 = connection.server1.posY;
             const x2 = connection.server2.posX;
@@ -82,7 +82,7 @@ class Network {
                 !(connection.server1.getIpString() === server1.getIpString() && connection.server2.getIpString() === server2.getIpString()) &&
                 !(connection.server1.getIpString() === server2.getIpString() && connection.server2.getIpString() === server1.getIpString())
         );
-        this.connections.push({ server1, server2, latency, highlighted: false });
+        this.connections.push({ server1, server2, latency, highlighted: false, bfsHighlighted: false });
         server1.neighbours.push(server2);
         server2.neighbours.push(server1);
     }
@@ -138,10 +138,68 @@ class Network {
         return {path: shortestPath, distance: receiverServer.distance};
     }
 
-    highlightPath(path) {
-        this.servers.forEach(server => server.highlighted = false);
-        this.connections.forEach(connection => connection.highlighted = false)
-        path.forEach(server => server.highlighted = true);
+    bfs(senderIp, receiverIp) {
+        const senderServer = this.servers.find(server => server.ipAddress.join('.') === senderIp);
+        const receiverServer = this.servers.find(server => server.ipAddress.join('.') === receiverIp);
+
+        this.servers.forEach(server => {
+            server.colored = false;
+            server.previous = null;
+        });
+        senderServer.colored = true;
+        let queue = [ senderServer ];
+
+        while (queue.length !== 0) {
+            const currentServer = queue.shift();
+            for(const neighbour of currentServer.neighbours) {
+                if (!neighbour.colored && !neighbour.disabled) {
+                    neighbour.colored = true;
+                    neighbour.previous = currentServer;
+                    queue.push(neighbour);
+                }
+            }
+        }
+
+        const shortestPath = [];
+        let previous = receiverServer;
+        while (previous) {
+            shortestPath.push(previous);
+            previous = previous.previous;
+        }
+
+        if(shortestPath.length === 0 && senderIp !== receiverIp) {
+            return []
+        }
+
+        return shortestPath;
+    }
+
+    highlightPath(path, bfsHighlight) {
+        this.servers.forEach(
+            server => {
+                if (bfsHighlight) {
+                    server.bfsHighlighted = false;
+                } else {
+                    server.highlighted = false;
+                }
+            }
+        );
+        this.connections.forEach(
+            connection => {
+                if (bfsHighlight) {
+                    connection.bfsHighlighted = false;
+                } else {
+                    connection.highlighted = false;
+                }
+            }
+        );
+        path.forEach(server => {
+            if (bfsHighlight) {
+                server.bfsHighlighted = true;
+            } else {
+                server.highlighted = true;
+            }
+        });
         for (let i = 0; i <= path.length - 2; i++) {
             const server1 = path[i];
             const server2 = path[i + 1];
@@ -150,7 +208,13 @@ class Network {
                     connection.server1.getIpString() === server1.getIpString() && connection.server2.getIpString() === server2.getIpString() ||
                     connection.server1.getIpString() === server2.getIpString() && connection.server2.getIpString() === server1.getIpString()
             );
-            if (connection) connection.highlighted = true;
+            if (connection) {
+                if (bfsHighlight) {
+                    connection.bfsHighlighted = true;
+                } else {
+                    connection.highlighted = true;
+                }
+            }
         }
     }
 }

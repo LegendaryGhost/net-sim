@@ -144,7 +144,22 @@ urlSearchForm.addEventListener('submit', event => {
                 currentPath = path;
             }
         }
+        let bfsPath = network.bfs(senderIp, receiverIps[0]);
+        for (const receiverIp of receiverIps) {
+            const path = network.bfs(senderIp, receiverIp);
+            if (path.length < bfsPath.length && path.length !== 0) {
+                bfsPath = path;
+            }
+        }
+        if (currentPath.length === 0) {
+            network.highlightPath([]);
+            network.highlightPath([], true);
+            network.draw(canvas, context);
+            alert(`Url : '${url}' inatteignable !`);
+            return;
+        }
         network.highlightPath(currentPath);
+        network.highlightPath(bfsPath, true);
         network.draw(canvas, context);
     } catch (e) {
         alert(e.message);
